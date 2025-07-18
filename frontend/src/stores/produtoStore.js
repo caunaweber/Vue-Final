@@ -5,6 +5,7 @@ export const useProdutoStore = defineStore('produto', {
   state: () => ({
     produtos: [], 
   }),
+
   actions: {
     async fetchProdutos() {
       try {
@@ -15,11 +16,31 @@ export const useProdutoStore = defineStore('produto', {
       }
     },
 
-    async addProduto(_produto) {
+    async addProduto(produtoData) {
+      try {
+        await api.post('/produtos', produtoData);
+        await this.fetchProdutos();
+      } catch (error) {
+        console.error('Erro ao adicionar produto:', error);
+      }
     },
-    async updateProduto(_produto) {
+
+    async updateProduto(produtoData) {
+      try {
+        await api.put(`/produtos/${produtoData.id}`, produtoData);
+        await this.fetchProdutos();
+      } catch (error) {
+        console.error('Erro ao atualizar produto:', error);
+      }
     },
-    async deleteProduto(_id) {
+
+    async deleteProduto(id) {
+      try {
+        await api.delete(`/produtos/${id}`);
+        await this.fetchProdutos();
+      } catch (error) {
+        console.error('Erro ao deletar produto:', error);
+      }
     }
   },
 });

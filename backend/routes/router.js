@@ -4,8 +4,8 @@ const usuarioController = require('../controllers/usuarioController');
 const produtoController = require('../controllers/produtoController'); 
 const authMiddleware = require('../middleware/authMiddleware');
 
-router.post('/registrar', usuarioController.createUsuario);
-router.post('/login', usuarioController.login);
+router.post('/auth/registrar', usuarioController.createUsuario);
+router.post('/auth/login', usuarioController.login);
 
 router.use('/produtos', authMiddleware);
 

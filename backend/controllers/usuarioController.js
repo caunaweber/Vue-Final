@@ -25,7 +25,7 @@ exports.createUsuario = async (req, res) => {
 };
 
 exports.login = async (req, res) => {
-    const { username, senha } = req.body;
+    const { username, password } = req.body;
 
     try {
         const usuario = await Usuario.findOne({ where: { username } });
@@ -33,7 +33,7 @@ exports.login = async (req, res) => {
             return res.status(404).json({ message: 'Usuário não encontrado.' });
         }
 
-        const senhaValida = bcrypt.compareSync(senha, usuario.senha);
+        const senhaValida = bcrypt.compareSync(password, usuario.senha);
         if (!senhaValida) {
             return res.status(401).json({ message: 'Senha inválida.' });
         }
@@ -46,6 +46,7 @@ exports.login = async (req, res) => {
 
         res.status(200).json({ token: token });
     } catch (error) {
+        console.error("ERRO DETALHADO NO LOGIN:", error);
         res.status(500).json({ message: 'Erro interno no servidor.' });
     }
 };

@@ -51,7 +51,7 @@ export default {
   },
   methods: {
     async handleLogin() {
-      const authStore = useAuthStore(); // Instancia a store
+      const authStore = useAuthStore();
       
       const credentials = {
         username: this.username,
@@ -61,10 +61,8 @@ export default {
       const success = await authStore.login(credentials);
 
       if (success) {
-        // Se o login for bem-sucedido, redireciona para o Dashboard
         this.$router.push('/');
       } else {
-        // Se falhar, mostra um alerta
         alert('Nome de usuário ou senha incorretos.');
       }
     },
