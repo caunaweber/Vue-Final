@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import api from '../services/api'; 
+import api from '../services/api';
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
@@ -8,7 +8,7 @@ export const useAuthStore = defineStore('auth', {
   getters: {
     isAuthenticated: (state) => !!state.token,
   },
-actions: {
+  actions: {
     async login(credentials) {
       try {
         const response = await api.post('/auth/login', credentials);
@@ -19,6 +19,15 @@ actions: {
         return true;
       } catch (error) {
         console.error('Erro no login:', error);
+        return false;
+      }
+    },
+    async register(userData) {
+      try {
+        await api.post('/auth/registrar', userData);
+        return true;
+      } catch (error) {
+        console.error('Erro no registro:', error);
         return false;
       }
     },

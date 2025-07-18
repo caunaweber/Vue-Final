@@ -13,6 +13,7 @@
     "core-js": "^3.8.3",
     "pinia": "^3.0.3",
     "roboto-fontface": "*",
+    "sweetalert2": "^11.22.2",
     "vue": "^3.2.13",
     "vue-router": "^4.5.1",
     "vuetify": "^3.0.0-beta.0",
@@ -29,7 +30,7 @@
     "vue-cli-plugin-vuetify": "~2.5.8",
     "webpack-plugin-vuetify": "^2.0.0-alpha.0"
   },
- "eslintConfig": {
+  "eslintConfig": {
     "root": true,
     "env": {
       "node": true
@@ -42,7 +43,12 @@
       "parser": "@babel/eslint-parser"
     },
     "rules": {
-      "no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
+      "no-unused-vars": [
+        "error",
+        {
+          "argsIgnorePattern": "^_"
+        }
+      ],
       "vue/valid-v-slot": "off"
     }
   },

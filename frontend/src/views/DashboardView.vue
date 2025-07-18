@@ -4,13 +4,8 @@
       <h1 class="text-h4">Gerenciamento de Produtos</h1>
       <v-btn color="primary" @click="openNewItemDialog">Novo Produto</v-btn>
     </div>
-    
-    <v-data-table
-      :headers="headers"
-      :items="produtos"
-      class="elevation-1"
-      item-key="id"
-    >
+
+    <v-data-table :headers="headers" :items="produtos" class="elevation-1" item-key="id">
       <template v-slot:item.preco="{ item }">
         <span>{{ formatarPreco(item.preco) }}</span>
       </template>
@@ -64,11 +59,11 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue';
 import { useProdutoStore } from '../stores/produtoStore';
+import { showConfirm, showSuccess } from '../services/alertService';
 
-// --- Estado do Componente ---
-const dialog = ref(false); // Controla a visibilidade do modal
-const isEditing = ref(false); // Controla se o modal está em modo de edição ou criação
-const editedItem = ref({ // Guarda os dados do item sendo editado/criado
+const dialog = ref(false);
+const isEditing = ref(false);
+const editedItem = ref({
   id: null,
   nome: '',
   descricao: '',
@@ -84,7 +79,6 @@ const headers = [
   { title: 'Ações', key: 'actions', sortable: false },
 ];
 
-// --- Store e Dados ---
 const produtoStore = useProdutoStore();
 const produtos = computed(() => produtoStore.produtos);
 
@@ -92,7 +86,6 @@ onMounted(() => {
   produtoStore.fetchProdutos();
 });
 
-// --- Métodos ---
 const formatarPreco = (value) => {
   if (!value) return '';
   return parseFloat(value).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
@@ -106,13 +99,19 @@ const openNewItemDialog = () => {
 
 const editItem = (item) => {
   isEditing.value = true;
-  editedItem.value = { ...item }; // Copia o item para o formulário
+  editedItem.value = { ...item };
   dialog.value = true;
 };
 
 const deleteItem = async (item) => {
-  if (confirm(`Tem certeza que deseja deletar o produto "${item.nome}"?`)) {
+  const confirmed = await showConfirm(
+    'Você tem certeza?',
+    `O produto "${item.nome}" será deletado permanentemente.`
+  );
+
+  if (confirmed) {
     await produtoStore.deleteProduto(item.id);
+    showSuccess('Produto deletado com sucesso!');
   }
 };
 

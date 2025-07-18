@@ -8,27 +8,18 @@
           </v-card-title>
           <v-card-text>
             <v-form @submit.prevent="handleLogin">
-              <v-text-field
-                v-model="username"
-                label="Nome de Usuário"
-                name="login"
-                prepend-icon="mdi-account"
-                type="text"
-                required
-              ></v-text-field>
+              <v-text-field v-model="username" label="Nome de Usuário" name="login" prepend-icon="mdi-account"
+                type="text" required></v-text-field>
 
-              <v-text-field
-                v-model="password"
-                label="Senha"
-                name="password"
-                prepend-icon="mdi-lock"
-                type="password"
-                required
-              ></v-text-field>
-              
+              <v-text-field v-model="password" label="Senha" name="password" prepend-icon="mdi-lock" type="password"
+                required></v-text-field>
+
               <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn type="submit" color="primary">Entrar</v-btn>
+                <v-card-actions>
+                  <v-btn text to="/registrar">Criar Conta</v-btn>
+                  <v-spacer></v-spacer>
+                  <v-btn type="submit" color="primary">Entrar</v-btn>
+                </v-card-actions>
               </v-card-actions>
             </v-form>
           </v-card-text>
@@ -40,6 +31,7 @@
 
 <script>
 import { useAuthStore } from '../stores/authStore';
+import { showError } from '../services/alertService';
 
 export default {
   name: 'LoginView',
@@ -52,7 +44,7 @@ export default {
   methods: {
     async handleLogin() {
       const authStore = useAuthStore();
-      
+
       const credentials = {
         username: this.username,
         password: this.password,
@@ -63,7 +55,7 @@ export default {
       if (success) {
         this.$router.push('/');
       } else {
-        alert('Nome de usuário ou senha incorretos.');
+        showError('Nome de usuário ou senha incorretos.');
       }
     },
   },
