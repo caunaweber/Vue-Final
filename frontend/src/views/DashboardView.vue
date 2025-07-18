@@ -10,6 +10,12 @@
         <span>{{ formatarPreco(item.preco) }}</span>
       </template>
 
+      <template v-slot:item.imagem="{ item }">
+        <v-avatar size="40">
+          <v-img :src="`${API_BASE_URL}/${item.imagem}`"></v-img>
+        </v-avatar>
+      </template>
+
       <template v-slot:item.actions="{ item }">
         <v-icon class="me-2" size="small" @click="editItem(item)">
           mdi-pencil
@@ -41,6 +47,10 @@
               <v-col cols="12">
                 <v-textarea v-model="editedItem.descricao" label="Descrição"></v-textarea>
               </v-col>
+              <v-col cols="12">
+                <v-file-input v-model="imageFile" label="Imagem do Produto" accept="image/*"
+                  prepend-icon="mdi-camera"></v-file-input>
+              </v-col>
             </v-row>
           </v-container>
         </v-card-text>
@@ -61,6 +71,7 @@ import { ref, onMounted, computed } from 'vue';
 import { useProdutoStore } from '../stores/produtoStore';
 import { showConfirm, showSuccess } from '../services/alertService';
 
+const imageFile = ref(null);
 const dialog = ref(false);
 const isEditing = ref(false);
 const editedItem = ref({
@@ -71,7 +82,10 @@ const editedItem = ref({
   preco: 0,
 });
 
+const API_BASE_URL = 'http://localhost:3000';
+
 const headers = [
+  { title: 'Imagem', key: 'imagem', sortable: false },
   { title: 'ID', key: 'id', sortable: true },
   { title: 'Nome', key: 'nome', sortable: true },
   { title: 'Categoria', key: 'categoria', sortable: true },
@@ -94,12 +108,14 @@ const formatarPreco = (value) => {
 const openNewItemDialog = () => {
   isEditing.value = false;
   editedItem.value = { id: null, nome: '', descricao: '', categoria: '', preco: 0 };
+  imageFile.value = null;
   dialog.value = true;
 };
 
 const editItem = (item) => {
   isEditing.value = true;
   editedItem.value = { ...item };
+  imageFile.value = null;
   dialog.value = true;
 };
 
@@ -120,10 +136,22 @@ const closeDialog = () => {
 };
 
 const save = async () => {
+  const formData = new FormData();
+
+  formData.append('nome', editedItem.value.nome);
+  formData.append('descricao', editedItem.value.descricao);
+  formData.append('categoria', editedItem.value.categoria);
+  formData.append('preco', editedItem.value.preco);
+
+  if (imageFile.value) {
+    formData.append('imagem', imageFile.value);
+  }
+
   if (isEditing.value) {
-    await produtoStore.updateProduto(editedItem.value);
+    formData.append('id', editedItem.value.id);
+    await produtoStore.updateProduto(formData);
   } else {
-    await produtoStore.addProduto(editedItem.value);
+    await produtoStore.addProduto(formData);
   }
   closeDialog();
 };

@@ -16,18 +16,19 @@ export const useProdutoStore = defineStore('produto', {
       }
     },
 
-    async addProduto(produtoData) {
+    async addProduto(formData) {
       try {
-        await api.post('/produtos', produtoData);
+        await api.post('/produtos', formData); 
         await this.fetchProdutos();
       } catch (error) {
         console.error('Erro ao adicionar produto:', error);
       }
     },
 
-    async updateProduto(produtoData) {
+    async updateProduto(formData) {
       try {
-        await api.put(`/produtos/${produtoData.id}`, produtoData);
+        const id = formData.get('id');
+        await api.put(`/produtos/${id}`, formData);
         await this.fetchProdutos();
       } catch (error) {
         console.error('Erro ao atualizar produto:', error);
